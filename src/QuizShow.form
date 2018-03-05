@@ -64,12 +64,9 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="a4799" class="javax.swing.JList" binding="playerList">
+              <component id="66dad" class="javax.swing.JList" binding="playerList">
                 <constraints/>
-                <properties>
-                  <opaque value="true"/>
-                  <preferredSize width="0" height="0"/>
-                </properties>
+                <properties/>
               </component>
             </children>
           </scrollpane>

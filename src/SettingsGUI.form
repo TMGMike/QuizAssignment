@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="SettingsGUI">
+  <grid id="27dc6" binding="mainPnl" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="500" height="400"/>
+    </constraints>
+    <properties>
+      <name value="mainPnl"/>
+      <preferredSize width="700" height="500"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="307ab" binding="topPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="b46bc" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <font size="16"/>
+              <text value="Quiz Show Settings"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="18274" binding="leftPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="West"/>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="f41fa" binding="rightPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="East"/>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="3ac54" binding="bottomPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="39244" class="javax.swing.JButton" binding="confirmBtn">
+            <constraints/>
+            <properties>
+              <text value="Confirm"/>
+              <toolTipText value="Save the Changes"/>
+            </properties>
+          </component>
+          <component id="ccc00" class="javax.swing.JButton" binding="cancelBtn">
+            <constraints/>
+            <properties>
+              <text value="Cancel"/>
+              <toolTipText value="Discard any changes and close this window"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="68ab4" binding="centrePnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="a6a75" class="javax.swing.JCheckBox" binding="effectsCheck">
+            <constraints/>
+            <properties>
+              <text value="Play Sound Effects"/>
+            </properties>
+          </component>
+          <component id="ed314" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <preferredSize width="600" height="16"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="1bb93" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <text value="Sound Effect Volume:"/>
+            </properties>
+          </component>
+          <component id="ba369" class="javax.swing.JSlider" binding="effectSlider">
+            <constraints/>
+            <properties>
+              <toolTipText value="Volume of the sound effects"/>
+            </properties>
+          </component>
+          <component id="150c" class="javax.swing.JLabel" binding="soundVolumeLbl">
+            <constraints/>
+            <properties>
+              <text value="50%"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

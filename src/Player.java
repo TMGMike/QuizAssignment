@@ -2,13 +2,14 @@ import java.io.Serializable;
 
 public class Player implements Serializable{
 
-    private String name;
 	private int id;
+	private String name;
 	private int money;
 	private boolean canPlay;
 	private boolean publicAvailable;
 	private boolean halfHalfAvailable;
 	private boolean secondLifeAvailable;
+	private int answeredCount;
 
     public Player(int id, String name, int money, boolean canPlay) {
         this.name = name;
@@ -97,6 +98,22 @@ public class Player implements Serializable{
 
 	@Override
     public String toString(){
-	    return this.getName() + " [" + this.getId() + "]";
+	    return " [" + this.getId() + "] " + this.getName() + " - £" + this.getMoney();
     }
+
+	public int getAnsweredCount() {
+		return this.answeredCount;
+	}
+
+	public void setAnsweredCount(int answeredCount) {
+		this.answeredCount = answeredCount;
+	}
+
+	/**
+	 *
+	 * @param id
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
 }
