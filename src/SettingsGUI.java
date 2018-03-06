@@ -29,6 +29,7 @@ public class SettingsGUI {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.pack();
         frame.setResizable(false);
+        soundVolumeLbl.setText(effectSlider.getValue() + "%");
         effectSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

@@ -85,6 +85,7 @@
             <constraints/>
             <properties>
               <toolTipText value="Volume of the sound effects"/>
+              <value value="25"/>
             </properties>
           </component>
           <component id="150c" class="javax.swing.JLabel" binding="soundVolumeLbl">

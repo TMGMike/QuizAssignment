@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="QuestionGUI">
+  <grid id="27dc6" binding="mainPnl" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="1113" height="400"/>
+    </constraints>
+    <properties>
+      <minimumSize width="100" height="110"/>
+      <preferredSize width="700" height="500"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="72802" binding="northPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="390c7" class="javax.swing.JLabel" binding="questionLbl">
+            <constraints/>
+            <properties>
+              <font size="14"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="DEFAULT_QUESTION_HOLDER"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="b3d4e" binding="eastPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="East"/>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="2f0f8" binding="southPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="8048e" class="javax.swing.JButton" binding="confirmChoice">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <text value="Final Answer"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="3184b" binding="westPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="West"/>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </grid>
+      <grid id="a1dc9" binding="centrePnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <minimumSize width="100" height="42"/>
+          <preferredSize width="600" height="66"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="4cd0a" class="javax.swing.JToggleButton" binding="answerOption1">
+            <constraints/>
+            <properties>
+              <autoscrolls value="true"/>
+              <preferredSize width="240" height="80"/>
+              <text value="DEFAULT_ANSWER"/>
+              <verticalAlignment value="0"/>
+            </properties>
+          </component>
+          <component id="978a3" class="javax.swing.JToggleButton" binding="answerOption2">
+            <constraints/>
+            <properties>
+              <autoscrolls value="true"/>
+              <preferredSize width="240" height="80"/>
+              <text value="DEFAULT_ANSWER"/>
+            </properties>
+          </component>
+          <component id="37645" class="javax.swing.JToggleButton" binding="answerOption3">
+            <constraints/>
+            <properties>
+              <autoscrolls value="true"/>
+              <opaque value="true"/>
+              <preferredSize width="240" height="80"/>
+              <text value="DEFAULT_ANSWER"/>
+            </properties>
+          </component>
+          <component id="c73d" class="javax.swing.JToggleButton" binding="answerOption4">
+            <constraints/>
+            <properties>
+              <autoscrolls value="true"/>
+              <opaque value="true"/>
+              <preferredSize width="240" height="80"/>
+              <text value="DEFAULT_ANSWER"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

@@ -34,10 +34,12 @@ public class QuizShow {
     private QuestionList entertainQuestions = new QuestionList();
     private QuestionList historyQuestions = new QuestionList();
 
+    // Define the list of questions that should be asked to the user. This will be used later.
+    private QuestionList questionList = new QuestionList();
 
     // Properties from the settings window. These are used within the game.
     private boolean useSoundEffects = true;
-    private int soundEffectVolume = 50;
+    private int soundEffectVolume = 25;
 
     // Create the setting frame and assign its properties.
     private SettingsGUI settingsGUI = new SettingsGUI(this);
@@ -81,35 +83,18 @@ public class QuizShow {
         continueBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               // playersPnl.setVisible(false);
-              //  playerListPnl.setVisible(false);
-              //  menuPnl.setVisible(true);
+                playersPnl.setVisible(false);
+                playerListPnl.setVisible(false);
+                menuPnl.setVisible(true);
 
                 int currentStage = 0;
                 while(currentStage <= MAX_QUESTIONS){
-
-                    ArrayList<Question> currentDifficulty = new ArrayList<Question>();
-                   // System.out.println(generalQuestions.getQuestion(0));
-                    for(int i = 0; i < generalQuestions.size(); i++){
-
-                        Question currentQuestion = generalQuestions.getQuestion(i);
-
-                        if(currentQuestion.getDifficultyLevel() == currentStage){
-                            currentDifficulty.add(currentQuestion);
-                            System.out.println("Found question for difficulty '" + currentStage + ": " + currentQuestion.getQuestion() + "\n");
-                        }
-                        i++;
+                    Question newQuestion = generalQuestions.chooseQuestion(MAX_QUESTIONS, currentStage);
+                    if(newQuestion != null){
+                        System.out.println(newQuestion + "\n");
+                        questionList.addQuestion(currentStage, newQuestion.getQuestion(), newQuestion.getCorrectAnswer(),
+                                newQuestion.getWrongAnswers(), newQuestion.getDifficultyLevel());
                     }
-                    if(currentDifficulty.size() > 0) {
-                        Random r = new Random();
-                        int Low = 0;
-                        int High = currentDifficulty.size();
-                        int questionId = r.nextInt(High-Low) + Low;
-                        System.out.println("Size: " + currentDifficulty.size());
-                        System.out.println(currentDifficulty.get(questionId) + "\n");
-                    }
-
-                   // System.out.println("current stage: " + currentStage);
                     currentStage++;
                 }
 
@@ -125,6 +110,14 @@ public class QuizShow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 settingsGUI.setVisisble(true);
+            }
+        });
+        playGameBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                QuestionGUI questionGUI = new QuestionGUI(QuizShow.this, questionList);
+                questionGUI.setVisisble(true);
+
             }
         });
     }
@@ -143,8 +136,8 @@ public class QuizShow {
                 "Australian Dollar", q3Incorrect, 1);
 
         String[] q4Incorrect =  new String[]{"Gordon Ramsay", "Barack Obama", "Theresa May"};
-        generalQuestions.addQuestion(3, "Who became famous for the quote: \"You can always count " +
-                        "on Americans to do the right thing - after they've tried everything else.\"?",
+        generalQuestions.addQuestion(3, "<html>Who became famous for the quote: \"You can always " +
+                        "count on <br>Americans to do the right thing - after they've tried everything else.\"?</html>",
                 "Winston Churchill", q4Incorrect, 2);
 
         String[] q5Incorrect =  new String[]{"Sky, weather, thunder, and lightning",
@@ -157,29 +150,13 @@ public class QuizShow {
                         "destruction of blood vessels?",
                 "Ebola", q6Incorrect, 2 );
 
-
-
-        generalQuestions.addQuestion(9, "Which virus causes bleeding in the body due to the " +
-                        "destruction of blood vessels?",
-                "Ebola", q6Incorrect, 2 );
-
-        generalQuestions.addQuestion(10, "Which virus causes bleeding in the body due to the " +
-                        "destruction of blood vessels?",
-                "Ebola", q6Incorrect, 2 );
-
-        generalQuestions.addQuestion(11, "Which virus causes bleeding in the body due to the " +
-                        "destruction of blood vessels?",
-                "Ebola", q6Incorrect, 2 );
-
-
-
         String[] q7Incorrect =  new String[]{"Earth's Moon", "Europa", "Deimos"};
         generalQuestions.addQuestion(6, "Which is the largest Moon in the solar system?",
                 "Ganymede", q7Incorrect, 3 );
 
         String[] q8Incorrect =  new String[]{"Isaac Newton", "Theresa May", "Winston Churchill"};
-        generalQuestions.addQuestion(7, "Which famous person was known for the following quote: " +
-                        "\"The difference between stupidity and genius is that genius has its limits\"?",
+        generalQuestions.addQuestion(7, "<html>Which famous person was known for the following quote:" +
+                        "<br>\"The difference between stupidity and genius is that genius has its limits\"?</html>",
                 "Albert Einstein", q8Incorrect, 3 );
 
         String[] q9Incorrect =  new String[]{"France", "Germany", "Sweden"};
