@@ -7,7 +7,7 @@ public class Question {
 	private int difficultyLevel; // This should be between 1 and the MAX_QUESTIONS value.
 	private int moneyAwarded = 0;
 	private boolean answered = false;
-	private String answeredBy;
+	private Player answeredBy;
 
     public Question(int id, String question, String correctAnswer, String[] wrongAnswers, int difficultyLevel) {
 		this.id = id;
@@ -102,7 +102,7 @@ public class Question {
 		this.answered = answered;
 	}
 
-	public String getAnsweredBy() {
+	public Player getAnsweredBy() {
 		return this.answeredBy;
 	}
 
@@ -110,7 +110,7 @@ public class Question {
 	 *
 	 * @param answeredBy
 	 */
-	public void setAnsweredBy(String answeredBy) {
+	public void setAnsweredBy(Player answeredBy) {
 		this.answeredBy = answeredBy;
 	}
 

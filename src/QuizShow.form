@@ -22,7 +22,7 @@
               <text value="What's your name?"/>
             </properties>
           </component>
-          <component id="62802" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+          <component id="62802" class="javax.swing.JTextField" binding="playerNameTF">
             <constraints/>
             <properties>
               <preferredSize width="150" height="24"/>

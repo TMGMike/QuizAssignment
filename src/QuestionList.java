@@ -13,6 +13,22 @@ public class QuestionList extends DefaultListModel<Question>{
                 incorrectAnswers, difficultyLevel));
     }
 
+    public void removeQuestion(String question){
+        Question toRemove = getQuestion(question);
+        if(toRemove != null) {
+            int i;
+            for (i = 0; i < super.size(); ) {
+                if (super.getElementAt(i) == toRemove){
+                    break;
+                }
+                i++;
+            }
+            super.removeElementAt(i);
+        }else {
+            System.out.println("Failed: Couldn't find question to remove.");
+        }
+    }
+
     public Question getQuestion(String questionMessage) {
         Question question;
         int index = -1;

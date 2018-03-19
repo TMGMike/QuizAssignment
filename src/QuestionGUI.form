@@ -15,6 +15,12 @@
         <properties/>
         <border type="none"/>
         <children>
+          <component id="9b97c" class="javax.swing.JLabel" binding="playerTurnLbl">
+            <constraints/>
+            <properties>
+              <text value="PLAYER_TURN"/>
+            </properties>
+          </component>
           <component id="390c7" class="javax.swing.JLabel" binding="questionLbl">
             <constraints/>
             <properties>
@@ -26,11 +32,58 @@
           </component>
         </children>
       </grid>
-      <grid id="b3d4e" binding="eastPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <grid id="b3d4e" binding="eastPnl" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="East"/>
-        <properties/>
+        <properties>
+          <preferredSize width="210" height="352"/>
+        </properties>
         <border type="none"/>
-        <children/>
+        <children>
+          <grid id="2b453" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints border-constraint="South"/>
+            <properties>
+              <preferredSize width="200" height="42"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="6791" class="javax.swing.JLabel" binding="audienceLbl">
+                <constraints/>
+                <properties>
+                  <preferredSize width="32" height="32"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="7f3f7" class="javax.swing.JLabel" binding="halfhalfLbl">
+                <constraints/>
+                <properties>
+                  <preferredSize width="32" height="32"/>
+                  <text value=""/>
+                </properties>
+              </component>
+              <component id="913d2" class="javax.swing.JLabel" binding="secondLifeLbl">
+                <constraints/>
+                <properties>
+                  <preferredSize width="32" height="32"/>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <scrollpane id="ab3cb">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <preferredSize width="150" height="310"/>
+              <verticalScrollBarPolicy value="20"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="ed38b" class="javax.swing.JList" binding="playerListView">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
       </grid>
       <grid id="2f0f8" binding="southPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints border-constraint="South"/>
@@ -46,11 +99,26 @@
           </component>
         </children>
       </grid>
-      <grid id="3184b" binding="westPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+      <grid id="3184b" binding="westPnl" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="West"/>
-        <properties/>
+        <properties>
+          <preferredSize width="670" height="25"/>
+          <visible value="false"/>
+        </properties>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="4532d" class="javax.swing.JLabel" binding="gameOverLbl">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <font size="18"/>
+              <horizontalAlignment value="0"/>
+              <horizontalTextPosition value="0"/>
+              <text value="GAME OVER! :'("/>
+              <verifyInputWhenFocusTarget value="true"/>
+              <visible value="true"/>
+            </properties>
+          </component>
+        </children>
       </grid>
       <grid id="a1dc9" binding="centrePnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints border-constraint="Center"/>

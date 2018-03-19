@@ -8,7 +8,7 @@ public class Player implements Serializable{
 	private boolean canPlay;
 	private boolean publicAvailable;
 	private boolean halfHalfAvailable;
-	private boolean secondLifeAvailable;
+	private boolean secondLifeAvailable; // If the player is wrong with this active, it will give them a 2nd chance, telling them it was incorrect.
 	private int answeredCount;
 
     public Player(int id, String name, int money, boolean canPlay) {
@@ -16,6 +16,10 @@ public class Player implements Serializable{
         this.id = id;
         this.money = money;
         this.canPlay = canPlay;
+
+        this.publicAvailable = true;
+        this.halfHalfAvailable = true;
+        this.secondLifeAvailable = true;
     }
 
     public int getId() {
@@ -45,7 +49,11 @@ public class Player implements Serializable{
 	 */
 	public void addMoney(int amount) {
 		// TODO - implement Player.addMoney
-		throw new UnsupportedOperationException();
+		this.money+= amount;
+	}
+
+	public void resetMoney(){
+		this.money = 0;
 	}
 
 	public boolean getCanPlay() {

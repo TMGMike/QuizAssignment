@@ -6,10 +6,12 @@ import javafx.scene.media.MediaPlayer;
 
 import javax.sound.midi.Soundbank;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class QuestionGUI {
@@ -25,61 +27,69 @@ public class QuestionGUI {
     private JToggleButton answerOption3;
     private JToggleButton answerOption4;
     private JLabel questionLbl;
+    private JLabel playerTurnLbl;
+    private JList playerListView;
+    private JLabel gameOverLbl;
+    private JLabel audienceLbl;
+    private JLabel halfhalfLbl;
+    private JLabel secondLifeLbl;
     private MediaPlayer player;
+    private PlayerList playerList;
+    private Player currentTurn;
+    private boolean isSelectingCategory = false;
+    private JToggleButton selected;
     private DeselectButtonGroup answerGroup = new DeselectButtonGroup();
     private JFrame frame;
 
     private boolean questionSelected = false;
-    private int currentStage = 0;
+    private int currentStage = 0; // The current Question stage. (In relation to MAX_QUESTIONS)
+    private int turnNumber = 0;
     private QuestionList listofQuestions;
     private Question currentQuestion;
+    private QuizShow main;
+    private QuestionList generalQuestions = new QuestionList();
+    private QuestionList technologyQuestions = new QuestionList();
+    private QuestionList entertainQuestions = new QuestionList();
+    private QuestionList historyQuestions = new QuestionList();
 
-    public QuestionGUI(QuizShow main, QuestionList listofQuestions) {
+    public QuestionGUI(QuizShow main) {
+
         frame = new JFrame("Question GUI");
         frame.setContentPane(this.mainPnl);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.pack();
         questionLbl.setBackground(mainPnl.getBackground());
+
+        audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience.png")));
+        halfhalfLbl.setIcon(new ImageIcon(getClass().getResource("halfhalf.png")));
+        secondLifeLbl.setIcon(new ImageIcon(getClass().getResource("secondlife.png")));
+
+        this.main = main;
         this.listofQuestions = listofQuestions;
+        this.playerList = this.main.players;
+        this.currentTurn = playerList.elementAt(0);
+        this.generalQuestions = this.main.getGeneralQuestions();
+        this.technologyQuestions = this.main.getTechnologyQuestions();
+        this.entertainQuestions = this.main.getEntertainQuestions();
+        this.historyQuestions = this.main.getHistoryQuestions();
 
-        currentQuestion = listofQuestions.getElementAt(currentStage);
-        applyCurrentQuestion();
+        this.playerListView.setModel(playerList);
 
-        answerOption1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                questionSelected = true;
-                answerOption1.setSelected(true);
-                confirmChoice.setEnabled(true);
-            }
-        });
-        answerOption2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                questionSelected = true;
-                answerOption2.setSelected(true);
-                confirmChoice.setEnabled(true);
-            }
-        });
-        answerOption3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                questionSelected = true;
-                answerOption3.setSelected(true);
-                confirmChoice.setEnabled(true);
-            }
-        });
-        answerOption4.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                questionSelected = true;
-                answerOption4.setSelected(true);
-                confirmChoice.setEnabled(true);
+        playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
+        currentStage = 1;
 
+        this.isSelectingCategory = true;
 
-            }
+        questionLbl.setText("Please Choose Your Category!");
+        answerOption1.setText("General Knowledge");
+        answerOption2.setText("Technology");
+        answerOption3.setText("Entertainment");
+        answerOption4.setText("Historical");
 
-        });
+        setHelpFacilitiesVisible(false);
+
+        confirmChoice.setText("Continue");
+
 
         answerGroup.add(answerOption1);
         answerGroup.add(answerOption2);
@@ -89,45 +99,229 @@ public class QuestionGUI {
         confirmChoice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(answerOption1.isSelected()){
-
-
-                    // A dummy panel from JFX had to be created to have it initialise the MediaPlayer from JFX.
-                    JFXPanel dummyPnl = new JFXPanel();
-                    Media media = new Media(new File(getRandomSoundString(true)).toURI().toString());
-                    player = new MediaPlayer(media);
-                    player.setVolume((double) main.getSoundEffectVolume() / 100);
-                    player.play();
-
-                    System.out.println("Correct!");
-                    currentStage++;
-
-                    answerOption1.setSelected(false);
-                    System.out.println(answerOption1.isSelected());
-                    answerOption2.setSelected(false);
-                    answerOption3.setSelected(false);
-                    answerOption4.setSelected(false);
-
-                    currentQuestion = listofQuestions.getElementAt(currentStage);
+                if(isSelectingCategory){
+                    isSelectingCategory = false;
+                    if(answerOption1.isSelected()){
+                        generateNextQuestion(generalQuestions);
+                    }
+                    else if(answerOption2.isSelected()){
+                        generateNextQuestion(technologyQuestions);
+                    }
+                    else if(answerOption3.isSelected()){
+                        generateNextQuestion(entertainQuestions);
+                    }
+                    else {
+                        generateNextQuestion(historyQuestions);
+                    }
                     applyCurrentQuestion();
+                }else {
+                    currentQuestion.setAnswered(true);
+                    currentQuestion.setAnsweredBy(currentTurn);
+
+                    if(selected != null && selected.getText().contains(currentQuestion.getCorrectAnswer())){
+
+
+                        // A dummy panel from JFX had to be created to have it initialise the MediaPlayer from JFX.
+                        if(main.isUseSoundEffects()){
+                            JFXPanel dummyPnl = new JFXPanel();
+                            Media media = new Media(new File(getRandomSoundString(true)).toURI().toString());
+                            player = new MediaPlayer(media);
+                            player.setVolume((double) QuestionGUI.this.main.getSoundEffectVolume() / 100);
+                            player.play();
+                        }else {
+                            System.out.println("Sounds are disabled.");
+                        }
+
+
+                        System.out.println("Correct!");
+                        // currentStage++;
+
+
+                        currentTurn.addMoney(currentQuestion.getMoneyAwarded());
+                        playerListView.updateUI();
+
+                        LabelRunner runner = new LabelRunner();
+                        Thread t = new Thread(runner);
+                        runner.setLabel(questionLbl);
+                        t.start();
+
+                    }
+                    else {
+                        currentTurn.setCanPlay(false); // Stop the player from being able to participate. They are "out".
+                        currentTurn.resetMoney();
+                        playerListView.updateUI();
+                        if(main.isUseSoundEffects()){
+                            JFXPanel dummyPnl = new JFXPanel();
+                            Media media = new Media(new File(getRandomSoundString(false)).toURI().toString());
+                            player = new MediaPlayer(media);
+                            player.setVolume((double) QuestionGUI.this.main.getSoundEffectVolume() / 100);
+                            System.out.println("Volume: "+ player.getVolume());
+                            player.play();
+
+                        }
+                    }
+
+                    updateNextPlayer();
+                    isSelectingCategory = true;
+                    // Reset the "board" - re-enable any buttons that were previously disabled (from half-half)
+                    answerOption1.setEnabled(true);
+                    answerOption2.setEnabled(true);
+                    answerOption3.setEnabled(true);
+                    answerOption4.setEnabled(true);
+
+                    questionLbl.setText("Please Choose Your Category!");
+                    answerOption1.setText("General Knowledge");
+                    answerOption2.setText("Technology");
+                    answerOption3.setText("Entertainment");
+                    answerOption4.setText("Historical");
+
+                    setHelpFacilitiesVisible(false);
+
+                    confirmChoice.setText("Continue");
 
                 }
-                else {
-                    JFXPanel dummyPnl = new JFXPanel();
-                    Media media = new Media(new File(getRandomSoundString(false)).toURI().toString());
-                    player = new MediaPlayer(media);
-                    player.setVolume((double) main.getSoundEffectVolume() / 100);
-                    System.out.println("volume: "+ player.getVolume());
-                    player.play();
-                }
+                answerOption1.setSelected(false);
+                answerOption2.setSelected(false);
+                answerOption3.setSelected(false);
+                answerOption4.setSelected(false);
+                confirmChoice.setEnabled(false);
             }
         });
+
+
+        MouseAdapter helpFacilityMouseListener = new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                if(e.getSource() == audienceLbl){
+                    if(currentTurn.getPublicAvailable()){
+                        audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience_used.png")));
+                        currentTurn.setPublicAvailable(false);
+                    }
+                }
+                else if(e.getSource() == halfhalfLbl){
+                    // Check if half-half is available, then use it if it is.
+                    if(currentTurn.getHalfHalfAvailable()){
+                        halfhalfLbl.setIcon(new ImageIcon(getClass().getResource("halfhalf_used.png")));
+                        currentTurn.setHalfHalfAvailable(false);
+                        ArrayList<JToggleButton> answerList = new ArrayList<>();
+                        answerList.add(answerOption1);
+                        answerList.add(answerOption2);
+                        answerList.add(answerOption3);
+                        answerList.add(answerOption4);
+
+                        // Loop through all of the answer buttons, finding the one containing the
+                        // correct answer. This is removed from the list so it cannot be disabled.
+                        for (int i=0; i<answerList.size(); i++){
+                            JToggleButton button = answerList.get(i);
+                            if(button.getText().contains(currentQuestion.getCorrectAnswer())){
+                                answerList.remove(i);
+                            }
+
+                        }
+//                        for(JToggleButton button : answerList){
+  //                      }
+                        // Generate a number which represents one of the leftover incorrect answers,
+                        // then removes this one from the list so it cannot be disabled when it has already.
+                        Random rand = new Random();
+                        int buttonId = rand.nextInt(answerList.size());
+                        answerList.get(buttonId).setEnabled(false);
+                        answerList.remove(answerList.get(buttonId));
+
+                        // Does the same again, without the previous incorrect answer.
+                        buttonId = rand.nextInt(answerList.size());
+                        answerList.get(buttonId).setEnabled(false);
+                    }
+                }
+                else if(e.getSource() == secondLifeLbl){
+                    if(currentTurn.getSecondLifeAvailable()){
+                        secondLifeLbl.setIcon(new ImageIcon(getClass().getResource("secondlife_used.png")));
+                        currentTurn.setSecondLifeAvailable(false);
+                    }
+                }
+            }
+        };
+        audienceLbl.addMouseListener(helpFacilityMouseListener);
+        halfhalfLbl.addMouseListener(helpFacilityMouseListener);
+        secondLifeLbl.addMouseListener(helpFacilityMouseListener);
+
+
+        ActionListener answerButtonClick = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                questionSelected = true;
+                ((JToggleButton) e.getSource()).setSelected(true);
+                confirmChoice.setEnabled(true);
+                selected = ((JToggleButton) e.getSource());
+            }
+        };
+        answerOption1.addActionListener(answerButtonClick);
+        answerOption2.addActionListener(answerButtonClick);
+        answerOption3.addActionListener(answerButtonClick);
+        answerOption4.addActionListener(answerButtonClick);
+    }
+    private int playersOut = 0;
+    private void updateNextPlayer() {
+        if(playersOut != playerList.size()){
+            System.out.println(currentTurn + " can play: " + currentTurn.getCanPlay());
+            if(playerList.getElementAt(playerList.size() - 1).getId() != currentTurn.getId()){
+                turnNumber++;
+                currentTurn = playerList.getElementAt(turnNumber);
+
+            } else {
+                System.out.println("All players have answered this stage. Moving on to next stage [Current" +
+                        " Stage: " + currentStage + "]");
+                turnNumber = 0;
+                currentStage++;
+                currentTurn = playerList.getElementAt(turnNumber);
+                playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
+            }
+
+            System.out.println(currentTurn + " can play: " + currentTurn.getCanPlay());
+
+            if(currentTurn.getCanPlay()){
+                playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
+            }else {
+                playersOut++;
+                System.out.println(currentTurn + " is out of the game. Skipping.");
+                updateNextPlayer();
+            }
+        } else {
+            System.out.println("All players are out of the game.");
+            centrePnl.setVisible(false);
+            northPnl.setVisible(false);
+            westPnl.setVisible(true);
+        }
+    }
+
+    private void generateNextQuestion(QuestionList category){
+        if(category.getSize() > 0){
+            try{
+                currentQuestion = category.chooseQuestion(main.getMAX_QUESTIONS(), currentStage);
+                category.removeQuestion(currentQuestion.getQuestion());
+                System.out.println("Selected: " + currentQuestion.getQuestion());
+            }catch (Exception err){
+                System.out.println("Encountered error while choosing question: " + err);
+            }
+        }
+        else {
+            System.out.println("Failed to generate next question - there are none left in this category");
+        }
+
+
+    }
+
+    public void setHelpFacilitiesVisible(boolean visible){
+        halfhalfLbl.setVisible(visible);
+        secondLifeLbl.setVisible(visible);
+        audienceLbl.setVisible(visible);
     }
 
     public String getRandomSoundString(boolean correctAnswer) {
         try {
             ArrayList<String> sounds = new ArrayList<>();
-            String currentDirectory = (System.getProperty("user.dir").replace("\\", "/")) + "/src/audio/";
+            String currentDirectory = (System.getProperty("user.dir").replace("\\", "/"))
+                    + "/src/audio/";
 
             if (correctAnswer) {
                 sounds.add(currentDirectory + "correct_clap.mp3");
@@ -152,6 +346,7 @@ public class QuestionGUI {
                 sounds.add(currentDirectory + "incorrect_titanic.wav");
                 sounds.add(currentDirectory + "incorrect_weakest.mp3");
             }
+
             Random r = new Random();
             int soundId = r.nextInt(sounds.size());
             return sounds.get(soundId);
@@ -163,15 +358,33 @@ public class QuestionGUI {
 
     public void setVisisble(boolean visible){
         frame.setVisible(visible);
+        System.out.println("Setting visible........");
     }
 
     public void applyCurrentQuestion() {
 
         questionLbl.setText(currentQuestion.getQuestion());
 
-        answerOption1.setText(currentQuestion.getCorrectAnswer());
-        answerOption2.setText(currentQuestion.getWrongAnswers()[0]);
-        answerOption3.setText(currentQuestion.getWrongAnswers()[1]);
-        answerOption4.setText(currentQuestion.getWrongAnswers()[2]);
+        // Sets the text of the option buttons to the potential answers.
+
+        ArrayList<String> shuffled = new ArrayList<>();
+
+        shuffled.addAll(Arrays.asList(currentQuestion.getWrongAnswers()));
+        shuffled.add(currentQuestion.getCorrectAnswer());
+
+        Collections.shuffle(shuffled);
+
+        answerOption1.setText(shuffled.get(0));
+        answerOption2.setText(shuffled.get(1));
+        answerOption3.setText(shuffled.get(2));
+        answerOption4.setText(shuffled.get(3));
+
+        // Changes the text of the confirm button from confirming the category choice,
+        // to submitting their chosen answer.
+        confirmChoice.setText("Final Answer!");
+
+        // Shows the help facilities, which are hidden when choosing categories.
+        setHelpFacilitiesVisible(true);
+
     }
 }
