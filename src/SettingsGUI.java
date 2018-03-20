@@ -30,6 +30,7 @@ public class SettingsGUI {
         frame.pack();
         frame.setResizable(false);
         soundVolumeLbl.setText(effectSlider.getValue() + "%");
+        effectsCheck.setSelected(true);
         effectSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

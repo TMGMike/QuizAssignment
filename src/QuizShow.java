@@ -185,7 +185,7 @@ public class QuizShow {
 
         incorrect =  new String[]{"Isaac Newton", "Theresa May", "Winston Churchill"};
         generalQuestions.addQuestion(7, "Which famous person was known for the following quote:" +
-                        "<br>\"The difference between stupidity and genius is that genius has its limits\"?",
+                        "\n\"The difference between stupidity and genius is that genius has its limits\"?",
                 "Albert Einstein", incorrect, 3 );
 
         incorrect =  new String[]{"France", "Germany", "Sweden"};
@@ -216,7 +216,7 @@ public class QuizShow {
                 "company created it?", "Mozilla", incorrect, 1);
 
         incorrect = new String[]{"Samsung Galaxy", "Google Pixel", "Apple iPhone"};
-        technologyQuestions.addQuestion(1, "In November 2017, a new smartphone was announced that " +
+        technologyQuestions.addQuestion(1, "In November 2017, a new smartphone was announced that \n" +
                 "featured the world's first 120GHz screen in a phone. Which was it?", "Razer Phone",
                 incorrect, 1);
 

@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +42,7 @@ public class QuestionGUI {
     private JToggleButton selected;
     private DeselectButtonGroup answerGroup = new DeselectButtonGroup();
     private JFrame frame;
-
+    private boolean isSecondLifeActive = false;
     private boolean questionSelected = false;
     private int currentStage = 0; // The current Question stage. (In relation to MAX_QUESTIONS)
     private int turnNumber = 0;
@@ -99,6 +101,7 @@ public class QuestionGUI {
         confirmChoice.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 if(isSelectingCategory){
                     isSelectingCategory = false;
                     if(answerOption1.isSelected()){
@@ -139,7 +142,7 @@ public class QuestionGUI {
 
                         currentTurn.addMoney(currentQuestion.getMoneyAwarded());
                         playerListView.updateUI();
-
+                        isSecondLifeActive = false;
                         LabelRunner runner = new LabelRunner();
                         Thread t = new Thread(runner);
                         runner.setLabel(questionLbl);
@@ -147,37 +150,48 @@ public class QuestionGUI {
 
                     }
                     else {
-                        currentTurn.setCanPlay(false); // Stop the player from being able to participate. They are "out".
-                        currentTurn.resetMoney();
-                        playerListView.updateUI();
-                        if(main.isUseSoundEffects()){
-                            JFXPanel dummyPnl = new JFXPanel();
-                            Media media = new Media(new File(getRandomSoundString(false)).toURI().toString());
-                            player = new MediaPlayer(media);
-                            player.setVolume((double) QuestionGUI.this.main.getSoundEffectVolume() / 100);
-                            System.out.println("Volume: "+ player.getVolume());
-                            player.play();
+                        if(isSecondLifeActive){
+                            selected.setEnabled(false);
+                            selected.setText("2nd Life!");
+                        }
+                        else {
+                            currentTurn.setCanPlay(false); // Stop the player from being able to participate. They are "out".
+                            currentTurn.resetMoney();
+                            playerListView.updateUI();
+                            if(main.isUseSoundEffects()){
+                                JFXPanel dummyPnl = new JFXPanel();
+                                Media media = new Media(new File(getRandomSoundString(false)).toURI().toString());
+                                player = new MediaPlayer(media);
+                                player.setVolume((double) QuestionGUI.this.main.getSoundEffectVolume() / 100);
+                                System.out.println("Volume: "+ player.getVolume());
+                                player.play();
 
+                            }
                         }
                     }
 
-                    updateNextPlayer();
-                    isSelectingCategory = true;
-                    // Reset the "board" - re-enable any buttons that were previously disabled (from half-half)
-                    answerOption1.setEnabled(true);
-                    answerOption2.setEnabled(true);
-                    answerOption3.setEnabled(true);
-                    answerOption4.setEnabled(true);
+                    if(isSecondLifeActive){
+                        isSecondLifeActive = false;
+                    } else {
 
-                    questionLbl.setText("Please Choose Your Category!");
-                    answerOption1.setText("General Knowledge");
-                    answerOption2.setText("Technology");
-                    answerOption3.setText("Entertainment");
-                    answerOption4.setText("Historical");
+                        updateNextPlayer();
+                        isSelectingCategory = true;
+                        // Reset the "board" - re-enable any buttons that were previously disabled (from half-half)
+                        answerOption1.setEnabled(true);
+                        answerOption2.setEnabled(true);
+                        answerOption3.setEnabled(true);
+                        answerOption4.setEnabled(true);
 
-                    setHelpFacilitiesVisible(false);
+                        questionLbl.setText("Please Choose Your Category!");
+                        answerOption1.setText("General Knowledge");
+                        answerOption2.setText("Technology");
+                        answerOption3.setText("Entertainment");
+                        answerOption4.setText("Historical");
 
-                    confirmChoice.setText("Continue");
+                        setHelpFacilitiesVisible(false);
+
+                        confirmChoice.setText("Continue");
+                    }
 
                 }
                 answerOption1.setSelected(false);
@@ -188,15 +202,67 @@ public class QuestionGUI {
             }
         });
 
-
+        int index = 8;
         MouseAdapter helpFacilityMouseListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                /** TODO - Implement the Timer to animate the correct answer button to increase and decrease in size.
+                    Maybe gradually increase and decrease in size?     **/
                 if(e.getSource() == audienceLbl){
                     if(currentTurn.getPublicAvailable()){
                         audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience_used.png")));
                         currentTurn.setPublicAvailable(false);
+
+                        Random random = new Random();
+                        int correctVote = random.nextInt(100-50) + 50; // 60
+
+                        int answer2Max = (100 - correctVote) / 3; // 60 / 3 = 20
+                        int answer2 = random.nextInt(100 - correctVote); // 15
+
+                        int answer3Max = answer2Max - answer2; // 20 - 15 = 5
+                        int answer3 = random.nextInt(100 - correctVote - answer2); // 3
+
+                        int answer4Max = answer3Max - answer3; // 5 - 3 = 2
+                        int answer4 = 100 - correctVote - answer2 - answer3;
+                        String[] incorrect = currentQuestion.getWrongAnswers();
+                        System.out.println("-- Total numbers -- \nCorrect Answer: " + correctVote + "%\n" + incorrect[0]
+                                + ": " + answer2 + "%\n" + incorrect[1] +  "2: " + answer3 + "%\n" + incorrect[2] + "3: "
+                                + answer4 + "%\nTotal Votes: " + (correctVote + answer2 + answer3 + answer4));
+                        final int inc = 8;
+                        Dimension d = new Dimension(answerOption1.getSize().width + inc,
+                                answerOption1.getSize().height + inc);
+                        if(answerOption1.getText().contains(currentQuestion.getCorrectAnswer())){
+                            answerOption1.setPreferredSize(d);
+                            answerOption1.setText(answerOption1.getText() + " [" + correctVote + "%]");
+
+                            answerOption2.setText(answerOption2.getText() + " [" + answer2 + "%]");
+                            answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
+                            answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                        }
+                        else if(answerOption2.getText().contains(currentQuestion.getCorrectAnswer())){
+                            answerOption2.setPreferredSize(d);
+                            answerOption2.setText(answerOption2.getText() + " [" + correctVote + "%]");
+
+                            answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
+                            answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
+                            answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                        }
+                        else if(answerOption3.getText().contains(currentQuestion.getCorrectAnswer())){
+                            answerOption3.setPreferredSize(d);
+                            answerOption3.setText(answerOption3.getText() + " [" + correctVote + "%]");
+
+                            answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
+                            answerOption2.setText(answerOption2.getText() + " [" + answer3 + "%]");
+                            answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                        }
+                        else if(answerOption4.getText().contains(currentQuestion.getCorrectAnswer())){
+                            answerOption4.setPreferredSize(d);
+                            answerOption4.setText(answerOption4.getText() + " [" + correctVote + "%]");
+
+                            answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
+                            answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
+                            answerOption2.setText(answerOption2.getText() + " [" + answer4 + "%]");
+                        }
                     }
                 }
                 else if(e.getSource() == halfhalfLbl){
@@ -219,8 +285,7 @@ public class QuestionGUI {
                             }
 
                         }
-//                        for(JToggleButton button : answerList){
-  //                      }
+
                         // Generate a number which represents one of the leftover incorrect answers,
                         // then removes this one from the list so it cannot be disabled when it has already.
                         Random rand = new Random();
@@ -237,6 +302,10 @@ public class QuestionGUI {
                     if(currentTurn.getSecondLifeAvailable()){
                         secondLifeLbl.setIcon(new ImageIcon(getClass().getResource("secondlife_used.png")));
                         currentTurn.setSecondLifeAvailable(false);
+                        isSecondLifeActive = true;
+                        JOptionPane.showMessageDialog(mainPnl, "Second life is a new ability, which gives" +
+                                " you a second chance if the answer you submit is incorrect. \n NOTE: If you use" +
+                                " this but still get the answer correct, you will still lose this help option.");
                     }
                 }
             }
@@ -322,7 +391,11 @@ public class QuestionGUI {
             ArrayList<String> sounds = new ArrayList<>();
             String currentDirectory = (System.getProperty("user.dir").replace("\\", "/"))
                     + "/src/audio/";
-
+            File file = new File(currentDirectory);
+            if(!file.exists()){
+                currentDirectory = (System.getProperty("user.dir").replace("\\", "/"))
+                        + "/audio/";
+            }
             if (correctAnswer) {
                 sounds.add(currentDirectory + "correct_clap.mp3");
                 sounds.add(currentDirectory + "correct_donaldtrump.mp3");
