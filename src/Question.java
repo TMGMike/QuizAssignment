@@ -8,7 +8,7 @@ public class Question {
 	private int moneyAwarded = 0;
 	private boolean answered = false;
 	private Player answeredBy;
-
+	private int rewarded;
     public Question(int id, String question, String correctAnswer, String[] wrongAnswers, int difficultyLevel) {
 		this.id = id;
 		this.question = question;
@@ -112,6 +112,14 @@ public class Question {
 	 */
 	public void setAnsweredBy(Player answeredBy) {
 		this.answeredBy = answeredBy;
+	}
+
+	public int getRewarded() {
+		return rewarded;
+	}
+
+	public void setRewarded(int rewarded) {
+		this.rewarded = rewarded;
 	}
 
 	@Override

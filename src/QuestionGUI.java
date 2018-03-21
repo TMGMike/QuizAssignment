@@ -1,20 +1,17 @@
-import javafx.application.Application;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import javax.sound.midi.Soundbank;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class QuestionGUI {
     private JPanel mainPnl;
@@ -46,6 +43,7 @@ public class QuestionGUI {
     private boolean questionSelected = false;
     private int currentStage = 0; // The current Question stage. (In relation to MAX_QUESTIONS)
     private int turnNumber = 0;
+    private int buttonTimerIndex = 0;
     private QuestionList listofQuestions;
     private Question currentQuestion;
     private QuizShow main;
@@ -53,22 +51,23 @@ public class QuestionGUI {
     private QuestionList technologyQuestions = new QuestionList();
     private QuestionList entertainQuestions = new QuestionList();
     private QuestionList historyQuestions = new QuestionList();
-
-    public QuestionGUI(QuizShow main) {
+    private Timer audienceTimer;
+    public QuestionGUI(QuizShow main, PlayerList players) {
 
         frame = new JFrame("Question GUI");
         frame.setContentPane(this.mainPnl);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.pack();
         questionLbl.setBackground(mainPnl.getBackground());
-
+        questionLbl.setForeground(new Color(246,246,246));
+        playerTurnLbl.setForeground(new Color(246,246,246));
         audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience.png")));
         halfhalfLbl.setIcon(new ImageIcon(getClass().getResource("halfhalf.png")));
         secondLifeLbl.setIcon(new ImageIcon(getClass().getResource("secondlife.png")));
 
         this.main = main;
         this.listofQuestions = listofQuestions;
-        this.playerList = this.main.players;
+        this.playerList = players;
         this.currentTurn = playerList.elementAt(0);
         this.generalQuestions = this.main.getGeneralQuestions();
         this.technologyQuestions = this.main.getTechnologyQuestions();
@@ -79,24 +78,19 @@ public class QuestionGUI {
 
         playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
         currentStage = 1;
-
-        this.isSelectingCategory = true;
-
-        questionLbl.setText("Please Choose Your Category!");
-        answerOption1.setText("General Knowledge");
-        answerOption2.setText("Technology");
-        answerOption3.setText("Entertainment");
-        answerOption4.setText("Historical");
-
-        setHelpFacilitiesVisible(false);
-
-        confirmChoice.setText("Continue");
-
+        showCategories();
 
         answerGroup.add(answerOption1);
         answerGroup.add(answerOption2);
         answerGroup.add(answerOption3);
         answerGroup.add(answerOption4);
+        Dimension buttonSize = new Dimension(708, 280);
+        frame.setMinimumSize(new Dimension(1652, 737));
+        answerOption1.setPreferredSize(buttonSize);
+        answerOption2.setPreferredSize(buttonSize);
+        answerOption3.setPreferredSize(buttonSize);
+        answerOption4.setPreferredSize(buttonSize);
+
 
         confirmChoice.addActionListener(new ActionListener() {
             @Override
@@ -116,10 +110,16 @@ public class QuestionGUI {
                     else {
                         generateNextQuestion(historyQuestions);
                     }
+                    answerOption1.setEnabled(true);
+                    answerOption2.setEnabled(true);
+                    answerOption3.setEnabled(true);
+                    answerOption4.setEnabled(true);
                     applyCurrentQuestion();
                 }else {
                     currentQuestion.setAnswered(true);
                     currentQuestion.setAnsweredBy(currentTurn);
+                    playerList.findPlayer(currentTurn.getId()).addAnsweredQuestion(currentQuestion);
+
 
                     if(selected != null && selected.getText().contains(currentQuestion.getCorrectAnswer())){
 
@@ -135,9 +135,12 @@ public class QuestionGUI {
                             System.out.println("Sounds are disabled.");
                         }
 
+                        currentTurn.getAnsweredQuestions().getQuestion(currentQuestion.getId()).
+                                setRewarded(currentQuestion.getMoneyAwarded());
 
                         System.out.println("Correct!");
                         // currentStage++;
+
 
 
                         currentTurn.addMoney(currentQuestion.getMoneyAwarded());
@@ -157,10 +160,13 @@ public class QuestionGUI {
                         else {
                             currentTurn.setCanPlay(false); // Stop the player from being able to participate. They are "out".
                             currentTurn.resetMoney();
+                            currentTurn.getAnsweredQuestions().getQuestion(currentQuestion.getId()).setRewarded(0);
                             playerListView.updateUI();
                             if(main.isUseSoundEffects()){
                                 JFXPanel dummyPnl = new JFXPanel();
-                                Media media = new Media(new File(getRandomSoundString(false)).toURI().toString());
+                                Media media = new Media(new File(getRandomSoundString(false))
+                                        .toURI().toString());
+
                                 player = new MediaPlayer(media);
                                 player.setVolume((double) QuestionGUI.this.main.getSoundEffectVolume() / 100);
                                 System.out.println("Volume: "+ player.getVolume());
@@ -182,15 +188,7 @@ public class QuestionGUI {
                         answerOption3.setEnabled(true);
                         answerOption4.setEnabled(true);
 
-                        questionLbl.setText("Please Choose Your Category!");
-                        answerOption1.setText("General Knowledge");
-                        answerOption2.setText("Technology");
-                        answerOption3.setText("Entertainment");
-                        answerOption4.setText("Historical");
-
-                        setHelpFacilitiesVisible(false);
-
-                        confirmChoice.setText("Continue");
+                        showCategories();
                     }
 
                 }
@@ -228,41 +226,154 @@ public class QuestionGUI {
                         System.out.println("-- Total numbers -- \nCorrect Answer: " + correctVote + "%\n" + incorrect[0]
                                 + ": " + answer2 + "%\n" + incorrect[1] +  "2: " + answer3 + "%\n" + incorrect[2] + "3: "
                                 + answer4 + "%\nTotal Votes: " + (correctVote + answer2 + answer3 + answer4));
-                        final int inc = 8;
+                        final int inc = 14;
+
+                        final Dimension currentSize = new Dimension(708, 280);
+
                         Dimension d = new Dimension(answerOption1.getSize().width + inc,
                                 answerOption1.getSize().height + inc);
-                        if(answerOption1.getText().contains(currentQuestion.getCorrectAnswer())){
-                            answerOption1.setPreferredSize(d);
-                            answerOption1.setText(answerOption1.getText() + " [" + correctVote + "%]");
 
-                            answerOption2.setText(answerOption2.getText() + " [" + answer2 + "%]");
-                            answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
-                            answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                        if(answerOption1.getText().contains(currentQuestion.getCorrectAnswer())){
+                            audienceTimer = new Timer();
+
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    System.out.println(answerOption1.getPreferredSize());
+                                    if(buttonTimerIndex == 0){
+                                        answerOption1.setPreferredSize(d);
+                                        answerOption1.setText(answerOption1.getText() + " [" + correctVote + "%]");
+
+                                        answerOption2.setText(answerOption2.getText() + " [" + answer2 + "%]");
+                                        answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
+                                        answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                                    }
+                                    else if (buttonTimerIndex == 1) {
+                                        answerOption1.setPreferredSize(currentSize);
+                                    }
+                                    else if (buttonTimerIndex == 2) {
+                                        answerOption1.setPreferredSize(d);
+                                    }
+                                    else if (buttonTimerIndex == 3) {
+                                        answerOption1.setPreferredSize(currentSize);
+                                    }
+                                    else {
+                                        buttonTimerIndex = 0;
+                                        audienceTimer.cancel();
+                                    }
+                                    answerOption4.updateUI();
+                                    buttonTimerIndex++;
+                                }
+                            };
+                            audienceTimer.scheduleAtFixedRate(task, 700,700);
                         }
                         else if(answerOption2.getText().contains(currentQuestion.getCorrectAnswer())){
-                            answerOption2.setPreferredSize(d);
-                            answerOption2.setText(answerOption2.getText() + " [" + correctVote + "%]");
 
-                            answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
-                            answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
-                            answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                            audienceTimer = new Timer();
+
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    System.out.println(answerOption2.getPreferredSize());
+                                    if(buttonTimerIndex == 0){
+                                        answerOption2.setPreferredSize(d);
+                                        answerOption2.setText(answerOption2.getText() + " [" + correctVote + "%]");
+
+                                        answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
+                                        answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
+                                        answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                                    }
+                                    else if (buttonTimerIndex == 1) {
+                                        answerOption2.setPreferredSize(currentSize);
+                                    }
+                                    else if (buttonTimerIndex == 2) {
+                                        answerOption2.setPreferredSize(d);
+                                    }
+                                    else if (buttonTimerIndex == 3) {
+                                        answerOption2.setPreferredSize(currentSize);
+                                    }
+                                    else {
+                                        buttonTimerIndex = 0;
+                                        audienceTimer.cancel();
+                                    }
+                                    answerOption4.updateUI();
+                                    buttonTimerIndex++;
+                                }
+                            };
+                            audienceTimer.scheduleAtFixedRate(task, 700,700);
                         }
                         else if(answerOption3.getText().contains(currentQuestion.getCorrectAnswer())){
-                            answerOption3.setPreferredSize(d);
-                            answerOption3.setText(answerOption3.getText() + " [" + correctVote + "%]");
 
-                            answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
-                            answerOption2.setText(answerOption2.getText() + " [" + answer3 + "%]");
-                            answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                            audienceTimer = new Timer();
+
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    System.out.println(answerOption3.getPreferredSize());
+                                    if(buttonTimerIndex == 0){
+                                        answerOption3.setPreferredSize(d);
+                                        answerOption3.setText(answerOption3.getText() + " [" + correctVote + "%]");
+
+                                        answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
+                                        answerOption2.setText(answerOption2.getText() + " [" + answer3 + "%]");
+                                        answerOption4.setText(answerOption4.getText() + " [" + answer4 + "%]");
+                                    }
+                                    else if (buttonTimerIndex == 1) {
+                                        answerOption3.setPreferredSize(currentSize);
+                                    }
+                                    else if (buttonTimerIndex == 2) {
+                                        answerOption3.setPreferredSize(d);
+                                    }
+                                    else if (buttonTimerIndex == 3) {
+                                        answerOption3.setPreferredSize(currentSize);
+                                    }
+                                    else {
+                                        buttonTimerIndex = 0;
+                                        audienceTimer.cancel();
+                                    }
+                                    answerOption4.updateUI();
+                                    buttonTimerIndex++;
+                                }
+                            };
+                            audienceTimer.scheduleAtFixedRate(task, 700,700);
+
+
                         }
                         else if(answerOption4.getText().contains(currentQuestion.getCorrectAnswer())){
-                            answerOption4.setPreferredSize(d);
-                            answerOption4.setText(answerOption4.getText() + " [" + correctVote + "%]");
+                            audienceTimer = new Timer();
 
-                            answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
-                            answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
-                            answerOption2.setText(answerOption2.getText() + " [" + answer4 + "%]");
+                            TimerTask task = new TimerTask() {
+                                @Override
+                                public void run() {
+                                    System.out.println(answerOption4.getPreferredSize());
+                                    if(buttonTimerIndex == 0){
+                                        answerOption4.setPreferredSize(d);
+                                        answerOption4.setText(answerOption4.getText() + " [" + correctVote + "%]");
+
+                                        answerOption1.setText(answerOption1.getText() + " [" + answer2 + "%]");
+                                        answerOption3.setText(answerOption3.getText() + " [" + answer3 + "%]");
+                                        answerOption2.setText(answerOption2.getText() + " [" + answer4 + "%]");
+                                    }
+                                    else if (buttonTimerIndex == 1) {
+                                        answerOption4.setPreferredSize(currentSize);
+                                    }
+                                    else if (buttonTimerIndex == 2) {
+                                        answerOption4.setPreferredSize(d);
+                                    }
+                                    else if (buttonTimerIndex == 3) {
+                                        answerOption4.setPreferredSize(currentSize);
+                                    }
+                                    else {
+                                        buttonTimerIndex = 0;
+                                        audienceTimer.cancel();
+                                    }
+                                    answerOption4.updateUI();
+                                    buttonTimerIndex++;
+                                }
+                            };
+                            audienceTimer.scheduleAtFixedRate(task, 700,700);
                         }
+
                     }
                 }
                 else if(e.getSource() == halfhalfLbl){
@@ -329,13 +440,51 @@ public class QuestionGUI {
         answerOption3.addActionListener(answerButtonClick);
         answerOption4.addActionListener(answerButtonClick);
     }
-    private int playersOut = 0;
+
+    private void showCategories() {
+        questionLbl.setText("Please Choose Your Category!");
+        if(generalQuestions.size() > 1) {
+            answerOption1.setText("General Knowledge");
+        }else{
+            answerOption1.setEnabled(false);
+            answerOption1.setText("Out of questions!");
+        }
+
+        if(technologyQuestions.size() > 1) {
+            answerOption2.setText("Technology");
+        }else{
+            answerOption2.setEnabled(false);
+            answerOption2.setText("Out of questions!");
+        }
+        if(entertainQuestions.size() > 1) {
+            answerOption3.setText("Entertainment");
+        }else{
+            answerOption3.setEnabled(false);
+            answerOption3.setText("Out of questions!");
+        }
+
+        if(historyQuestions.size() > 1) {
+            answerOption4.setText("Historical");
+        }else{
+            answerOption4.setEnabled(false);
+            answerOption4.setText("Out of questions!");
+        }
+        setHelpFacilitiesVisible(false);
+        this.isSelectingCategory = true;
+        confirmChoice.setText("Continue");
+    }
+
+    private PlayerList playersOut = new PlayerList();
     private void updateNextPlayer() {
-        if(playersOut != playerList.size()){
+        EndGameGUI end = new EndGameGUI(QuestionGUI.this, playerList);
+
+        boolean lastTurn = false;
+        if(playersOut.size() != playerList.size()){
             System.out.println(currentTurn + " can play: " + currentTurn.getCanPlay());
             if(playerList.getElementAt(playerList.size() - 1).getId() != currentTurn.getId()){
                 turnNumber++;
                 currentTurn = playerList.getElementAt(turnNumber);
+
 
             } else {
                 System.out.println("All players have answered this stage. Moving on to next stage [Current" +
@@ -344,22 +493,52 @@ public class QuestionGUI {
                 currentStage++;
                 currentTurn = playerList.getElementAt(turnNumber);
                 playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
+                lastTurn = true;
             }
-
             System.out.println(currentTurn + " can play: " + currentTurn.getCanPlay());
-
+            System.out.println("Current stage: " + currentStage);
+            if(lastTurn && currentStage > main.getMAX_QUESTIONS()){
+                end.setVisible(true);
+                this.setVisisble(false);
+            }
+            System.out.println("Out: " + playersOut);
             if(currentTurn.getCanPlay()){
                 playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
+                if(currentTurn.getHalfHalfAvailable()){
+                    halfhalfLbl.setIcon(new ImageIcon(getClass().getResource("halfhalf.png")));
+                }else {
+                    halfhalfLbl.setIcon(new ImageIcon(getClass().getResource("halfhalf_used.png")));
+                }
+                if(currentTurn.getSecondLifeAvailable()){
+                    secondLifeLbl.setIcon(new ImageIcon(getClass().getResource("secondlife.png")));
+                }
+                else {
+                    secondLifeLbl.setIcon(new ImageIcon(getClass().getResource("secondlife_used.png")));
+                }
+                if(currentTurn.getPublicAvailable()){
+                    audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience.png")));
+                }
+                else {
+                    audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience_used.png")));
+                }
             }else {
-                playersOut++;
+                if(playersOut.findPlayer(currentTurn.getId()) == null){
+
+                    playersOut.addPlayer(currentTurn.getId(), currentTurn.getName(),
+                            currentTurn.getMoney(), currentTurn.getCanPlay());
+
+                }
+
                 System.out.println(currentTurn + " is out of the game. Skipping.");
+
+                System.out.println("Out: " + playersOut);
                 updateNextPlayer();
             }
         } else {
             System.out.println("All players are out of the game.");
-            centrePnl.setVisible(false);
-            northPnl.setVisible(false);
-            westPnl.setVisible(true);
+
+            end.setVisible(true);
+            this.setVisisble(false);
         }
     }
 

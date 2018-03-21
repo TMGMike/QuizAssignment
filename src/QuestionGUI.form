@@ -6,13 +6,16 @@
     </constraints>
     <properties>
       <minimumSize width="100" height="110"/>
-      <preferredSize width="700" height="500"/>
+      <preferredSize width="1666" height="718"/>
     </properties>
     <border type="none"/>
     <children>
       <grid id="72802" binding="northPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints border-constraint="North"/>
-        <properties/>
+        <properties>
+          <background color="-7008059"/>
+          <foreground color="-592138"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="9b97c" class="javax.swing.JLabel" binding="playerTurnLbl">
@@ -35,6 +38,7 @@
       <grid id="b3d4e" binding="eastPnl" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="East"/>
         <properties>
+          <background color="-7008059"/>
           <preferredSize width="210" height="352"/>
         </properties>
         <border type="none"/>
@@ -42,6 +46,7 @@
           <grid id="2b453" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
             <constraints border-constraint="South"/>
             <properties>
+              <background color="-7008059"/>
               <preferredSize width="200" height="42"/>
             </properties>
             <border type="none"/>
@@ -72,6 +77,7 @@
           <scrollpane id="ab3cb">
             <constraints border-constraint="Center"/>
             <properties>
+              <background color="-7008059"/>
               <preferredSize width="150" height="310"/>
               <verticalScrollBarPolicy value="20"/>
             </properties>
@@ -87,13 +93,19 @@
       </grid>
       <grid id="2f0f8" binding="southPnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints border-constraint="South"/>
-        <properties/>
+        <properties>
+          <background color="-7008059"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="8048e" class="javax.swing.JButton" binding="confirmChoice">
             <constraints/>
             <properties>
+              <background color="-1991161"/>
               <enabled value="false"/>
+              <maximumSize width="147" height="48"/>
+              <opaque value="true"/>
+              <preferredSize width="147" height="48"/>
               <text value="Final Answer"/>
             </properties>
           </component>
@@ -123,6 +135,7 @@
       <grid id="a1dc9" binding="centrePnl" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
         <constraints border-constraint="Center"/>
         <properties>
+          <background color="-7008059"/>
           <minimumSize width="100" height="42"/>
           <preferredSize width="600" height="66"/>
         </properties>
@@ -132,6 +145,9 @@
             <constraints/>
             <properties>
               <autoscrolls value="true"/>
+              <background color="-1991161"/>
+              <font size="14"/>
+              <maximumSize width="2900" height="1600"/>
               <preferredSize width="240" height="80"/>
               <text value="DEFAULT_ANSWER"/>
               <verticalAlignment value="0"/>
@@ -141,6 +157,9 @@
             <constraints/>
             <properties>
               <autoscrolls value="true"/>
+              <background color="-1991161"/>
+              <font size="14"/>
+              <maximumSize width="2900" height="1600"/>
               <preferredSize width="240" height="80"/>
               <text value="DEFAULT_ANSWER"/>
             </properties>
@@ -149,6 +168,10 @@
             <constraints/>
             <properties>
               <autoscrolls value="true"/>
+              <background color="-1991161"/>
+              <font size="14"/>
+              <inheritsPopupMenu value="false"/>
+              <maximumSize width="2900" height="1600"/>
               <opaque value="true"/>
               <preferredSize width="240" height="80"/>
               <text value="DEFAULT_ANSWER"/>
@@ -158,6 +181,9 @@
             <constraints/>
             <properties>
               <autoscrolls value="true"/>
+              <background color="-1991161"/>
+              <font size="14"/>
+              <maximumSize width="2500" height="1600"/>
               <opaque value="true"/>
               <preferredSize width="240" height="80"/>
               <text value="DEFAULT_ANSWER"/>

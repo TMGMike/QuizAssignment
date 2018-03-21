@@ -11,7 +11,9 @@ public class Player implements Serializable{
 	private boolean secondLifeAvailable; // If the player is wrong with this active, it will give them a 2nd chance, telling them it was incorrect.
 	private int answeredCount;
 
-    public Player(int id, String name, int money, boolean canPlay) {
+	private QuestionList answeredQuestions = new QuestionList();
+
+	public Player(int id, String name, int money, boolean canPlay) {
         this.name = name;
         this.id = id;
         this.money = money;
@@ -21,8 +23,15 @@ public class Player implements Serializable{
         this.halfHalfAvailable = true;
         this.secondLifeAvailable = true;
     }
+	/**
+	 *
+	 * @param id
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public int getId() {
+	public int getId() {
 		return this.id;
 	}
 
@@ -117,11 +126,11 @@ public class Player implements Serializable{
 		this.answeredCount = answeredCount;
 	}
 
-	/**
-	 *
-	 * @param id
-	 */
-	public void setId(int id) {
-		this.id = id;
+	public QuestionList getAnsweredQuestions() {
+		return answeredQuestions;
+	}
+	public void addAnsweredQuestion(Question toAdd){
+    	this.answeredQuestions.addQuestion(toAdd.getId(), toAdd.getQuestion(), toAdd.getCorrectAnswer(),
+				toAdd.getWrongAnswers(), toAdd.getDifficultyLevel());
 	}
 }

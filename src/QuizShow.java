@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -14,10 +15,10 @@ public class QuizShow {
     private JButton playGameBtn;
     private JButton exitBtn;
     private JButton settingsBtn;
-    private JButton questionEditor;
     private JPanel playersPnl;
     private JPanel playerListPnl;
     private JPanel menuPnl;
+    private JLabel logoLbl;
 
     // Set how many questions must be answered in order to win. This helps in asking in order of difficulty.
     // A question's difficulty level should be between 1 and this value.
@@ -36,7 +37,6 @@ public class QuizShow {
     private QuestionList historyQuestions = new QuestionList();
 
     // Define the list of questions that should be asked to the user. This will be used later.
-    private QuestionList questionList = new QuestionList();
 
     // Properties from the settings window. These are used within the game.
     private boolean useSoundEffects = true;
@@ -49,8 +49,8 @@ public class QuizShow {
         // Creates the player list and sets the model.
         players = new PlayerList();
         playerList.setModel(players);
+        logoLbl.setIcon(new ImageIcon(getClass().getResource("Zillionaire_Logo.png")));
 
-        addInitialQuestions();
         playerNameTF.requestFocus();
         addPlyrBtn.addActionListener(new ActionListener() {
             @Override
@@ -95,16 +95,7 @@ public class QuizShow {
                     playersPnl.setVisible(false);
                     playerListPnl.setVisible(false);
                     menuPnl.setVisible(true);
-                    int currentStage = 0;
-                    while(currentStage <= MAX_QUESTIONS){
-                        Question newQuestion = generalQuestions.chooseQuestion(MAX_QUESTIONS, currentStage);
-                        if(newQuestion != null){
-                            System.out.println(newQuestion + "\n");
-                            questionList.addQuestion(currentStage, newQuestion.getQuestion(), newQuestion.getCorrectAnswer(),
-                                    newQuestion.getWrongAnswers(), newQuestion.getDifficultyLevel());
-                        }
-                        currentStage++;
-                    }
+
                 }else {
                     JOptionPane.showMessageDialog(mainPnl,"Please provide at least one player.");
                 }
@@ -126,7 +117,20 @@ public class QuizShow {
         playGameBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                QuestionGUI questionGUI = new QuestionGUI(QuizShow.this);
+                addInitialQuestions();
+                PlayerList newPlayerList = new PlayerList();
+
+                /*
+                    This will reset any players currently in the list, defaulting back to no answered questions,
+                    and no money, so the user doesn't have to restart the software to start a new game.
+                 */
+                for(int i = 0; i < players.size(); i++) {
+                    Player current = players.getElementAt(i);
+                    newPlayerList.addPlayer(current.getId(), current.getName(), 0, true);
+                }
+                players.clear();
+                players = newPlayerList;
+                QuestionGUI questionGUI = new QuestionGUI(QuizShow.this, players);
                 questionGUI.setVisisble(true);
 
             }
@@ -207,7 +211,10 @@ public class QuizShow {
         incorrect =  new String[]{"Martin Luther King", "Charles Babbage", "Winston Churchill"};
         generalQuestions.addQuestion(11, "Which famous person said the following quote: \"Life " +
                         "would be tragic if it weren't funny\"?","Stephen Hawking", incorrect,5);
+        incorrect =  new String[]{"Martin Luther King", "Charles Babbage", "Winston Churchill"};
 
+        generalQuestions.addQuestion(12, "Which famous person said the following quote: \"Life " +
+                "would be tragic if it weren't funny\"?","Stephen Hawking", incorrect,5);
 
 
         // Technology Questions
@@ -239,7 +246,7 @@ public class QuizShow {
 
         incorrect = new String[]{"'Standard'", "'Silly'", "'Simple'"};
         technologyQuestions.addQuestion(6, "What does the last 'S' stand for in: HTTPS, WSS, FTPS?",
-                "Secure", incorrect, 3);
+                "'Secure'", incorrect, 3);
 
         incorrect = new String[]{"AWS", "OVH", "DreamHost"};
         technologyQuestions.addQuestion(7, "Which of the following is Microsoft's Cloud service provider?",
