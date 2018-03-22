@@ -275,6 +275,10 @@ public class QuizShow {
         technologyQuestions.addQuestion(12, "Which developer was the first to create a Subathon Tool" +
                         " for Twitch streamers?","Mike Binks", incorrect, 5);
 
+        incorrect = new String[]{"Nokia", "LG", "Motorola"};
+        technologyQuestions.addQuestion(12, "Which manufacturer made the Pearl 8100 mobile phone?",
+                "BlackBerry", incorrect, 5);
+
 
 
         incorrect = new String[]{"Frosty Knickers", "The Beast", "The Dark Destroyer"};
@@ -285,17 +289,90 @@ public class QuizShow {
         entertainQuestions.addQuestion(1, "What is DC's The Flash's real name?",
                 "Barry Allen", incorrect, 1);
 
-        incorrect = new String[]{"Call of Duty: Modern Warfare 2", "Tom Clancy's: The Division", "Grand Theft Auto IV"};
-        entertainQuestions.addQuestion(3, "In which game does the quote \"Drop your weapon, or drop " +
-                        "your drawers!\" appear?", "7 Days to Die", incorrect, 3);
+        incorrect = new String[]{"Barry Allen", "Steve Jobs", "John Smith"};
+        entertainQuestions.addQuestion(2, "What is Batman's real name?",
+                "Bruce Wayne", incorrect, 1);
+
+        incorrect = new String[]{"Mixer", "Smashcast.tv", "Hitbox.tv"};
+        entertainQuestions.addQuestion(3, "Amazon purchased a game livestreaming service in 2014." +
+                        " Which service was it?", "Twitch.tv", incorrect, 2);
+
+        incorrect = new String[]{"Mixer", "Smashcast.tv", "Hitbox.tv"};
+        entertainQuestions.addQuestion(4, "Amazon purchased a game livestreaming service in 2014." +
+                " Which service was it?", "Twitch.tv", incorrect, 2);
+
+        incorrect = new String[]{"Clementine", "John Snow", "Glenn Rhee"};
+        entertainQuestions.addQuestion(5, "Who was the main character in Life is Strange?",
+                "Max Caulfield", incorrect, 2);
 
         incorrect = new String[]{"Call of Duty: Modern Warfare 2", "Tom Clancy's: The Division", "Grand Theft Auto IV"};
-        entertainQuestions.addQuestion(4, "In which film does the quote \"It's just good business, Jack. " +
-                "It's just good business.\" appear?", "Pirates of the Caribbean: At World's End", incorrect, 3);
+        entertainQuestions.addQuestion(6, "In which film does the quote \"It's just good business, " +
+                "Jack.\" appear?", "Pirates of the Caribbean: At World's End", incorrect, 3);
 
         incorrect = new String[]{"Barney", "Dinosaurs", "Jurassic Park"};
-       entertainQuestions.addQuestion(5, "Which TV series featured a baby Triceratops called \"Chomp\"?", "Dinosaur King",
-                incorrect, 3);
+       entertainQuestions.addQuestion(7, "Which TV series featured a baby Triceratops called \"Chomp\"?",
+               "Dinosaur King", incorrect, 3);
+
+        incorrect = new String[]{"TellTale Games", "Blizzard", "Epic Games"};
+        entertainQuestions.addQuestion(8, "Which company developed 'Life is Strange'?",
+                "Dontnod", incorrect, 4);
+
+        incorrect = new String[]{"USS Bruce Wayne", "USS Carl Vinson", "USS Lexington"};
+        entertainQuestions.addQuestion(9, "In the TV show 'The Last Ship', what was the name of " +
+                "the navy ship?", "USS Nathan James", incorrect, 4);
+
+        incorrect = new String[]{"Charlotte Douglas", "Chicago Midway", "Cleveland Hopkins"};
+        entertainQuestions.addQuestion(10, "Which airport was featured in Die Hard 2?",
+                "Washington Dulles", incorrect, 5);
+
+        incorrect = new String[]{"Flight 620", "Flight 715", "Flight 915"};
+        entertainQuestions.addQuestion(11, "What was the flight number of the airplane in 'Lost'?",
+                "Flight 815", incorrect, 5);
+
+
+
+        incorrect = new String[]{"16 November", "11 October", "11 December"};
+        historyQuestions.addQuestion(0, "World War 1 ended in 1918. On which day did it end?",
+                "11 November", incorrect, 1);
+
+        incorrect = new String[]{"The Bloody War", "The Lost War", "The Scary War"};
+        historyQuestions.addQuestion(1, "What was World War 1 known as?",
+                "The Great War", incorrect, 1);
+
+        incorrect = new String[]{"1939", "1941", "1943"};
+        historyQuestions.addQuestion(2, "In which year was Korea divided into North Korea and South Korea?",
+                "1945", incorrect, 2);
+
+        incorrect = new String[]{"Great Britain", "Germany", "Russia"};
+        historyQuestions.addQuestion(3, "Vietnam claimed independence from which country in 1945?",
+                "France", incorrect, 2);
+
+        incorrect = new String[]{"June 6th 1942", "July 6th 1944", "July 6th 1942"};
+        historyQuestions.addQuestion(4, "D-Day and the Normandy landings took place on which date?",
+                "June 6th 1944", incorrect, 3);
+
+        incorrect = new String[]{"1862", "1849", "1871"};
+        historyQuestions.addQuestion(5, "In which year was Abraham Lincoln assassinated?",
+                "1865", incorrect, 3);
+
+        incorrect = new String[]{"HMS Destroyer", "HMS Belfast", "HMS Daring"};
+        historyQuestions.addQuestion(6, "What was the name of Lord Nelson’s flagship?",
+                "HMS Victory", incorrect, 4);
+
+        incorrect = new String[]{"1992", "1989", "1985"};
+        historyQuestions.addQuestion(7, "In which year was Nelson Mandela released from prison?",
+                "1990", incorrect, 4);
+
+        incorrect = new String[]{"Malacca", "Ceuta", "Azores"};
+        historyQuestions.addQuestion(8, "Which South American country declared independence from " +
+                        "Portugal on September 7th 1822?","Brazil", incorrect, 5);
+
+        incorrect = new String[]{"1992", "1989", "1985"};
+        historyQuestions.addQuestion(9, "In which year was Nelson Mandela released from prison?",
+                "1990", incorrect, 5);
+
+
+
     }
 
     public boolean isUseSoundEffects() {
