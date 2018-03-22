@@ -4,7 +4,7 @@ public class Question {
 	private String question;
 	private String correctAnswer;
 	private String[] wrongAnswers;
-	private int difficultyLevel; // This should be between 1 and the MAX_QUESTIONS value.
+	private int difficultyLevel;
 	private int moneyAwarded = 0;
 	private boolean answered = false;
 	private Player answeredBy;

@@ -80,7 +80,7 @@ public class QuestionList extends DefaultListModel<Question>{
             }
             i++;
         }
-        // Verifies if any questions, and chooses a question from this list, returning it.
+        // Verifies if any questions were found, and chooses a question from this list, then returns it.
         if(currentDifficulty.size() > 0) {
             Random r = new Random();
             int Low = 0;
@@ -89,7 +89,7 @@ public class QuestionList extends DefaultListModel<Question>{
             System.out.println("Size: " + currentDifficulty.size());
             return currentDifficulty.get(questionId);
         }
-        // Return null if no questions were found for this specific difficulty level.
+
         return null;
     }
 
@@ -99,12 +99,10 @@ public class QuestionList extends DefaultListModel<Question>{
         for(int i = 0; i < this.size();){
             Question currentQuestion = this.getElementAt(i);
             if(currentQuestion.getDifficultyLevel() == difficultyLevel){
-                // Break out of the loop and return true if any question is found.
                 return true;
             }
             i++;
         }
-        // Return false if nothing has been found yet.
         return false;
     }
 }

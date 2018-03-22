@@ -30,7 +30,6 @@ public class SettingsGUI {
         frame.pack();
         frame.setResizable(false);
 
-        // Sets the default values for the volume and sound effect check box.
         soundVolumeLbl.setText(effectSlider.getValue() + "%");
         effectsCheck.setSelected(true);
 
@@ -48,7 +47,6 @@ public class SettingsGUI {
             }
         });
 
-        // Controls what happens when the confirm button is pressed.
         confirmBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

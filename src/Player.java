@@ -8,7 +8,7 @@ public class Player implements Serializable{
 	private boolean canPlay;
 	private boolean publicAvailable;
 	private boolean halfHalfAvailable;
-	private boolean secondLifeAvailable; // If the player is wrong with this active, it will give them a 2nd chance, telling them it was incorrect.
+	private boolean secondLifeAvailable;
 	private int answeredCount;
 
 	private QuestionList answeredQuestions = new QuestionList();

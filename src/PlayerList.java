@@ -9,7 +9,6 @@ public class PlayerList extends DefaultListModel<Player> {
         super.addElement(new Player(id, name, money, canPlay));
     }
 
-    // Find a player by name.
     public Player findPlayer(String name){
         Player player;
         int index = -1;

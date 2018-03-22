@@ -26,31 +26,28 @@ public class QuizShow {
 
     // Set the maximum amount of players allowed in one game.
     private final int MAX_PLAYERS = 10;
-    // Player models
+
     PlayerList players;
 
-    // Question properties
     private QuestionList generalQuestions = new QuestionList();
     private QuestionList technologyQuestions = new QuestionList();
     private QuestionList entertainQuestions = new QuestionList();
     private QuestionList historyQuestions = new QuestionList();
 
-    // Define the list of questions that should be asked to the user. This will be used later.
-
     // Properties from the settings window. These are used within the game.
     private boolean useSoundEffects = true;
     private int soundEffectVolume = 25;
 
-    // Create the setting frame and assign its properties.
     private SettingsGUI settingsGUI = new SettingsGUI(this);
 
     public QuizShow() {
-        // Creates the player list and sets the model.
         players = new PlayerList();
         playerList.setModel(players);
+
         logoLbl.setIcon(new ImageIcon(getClass().getResource("Zillionaire_Logo.png")));
 
         playerNameTF.requestFocus();
+
         addPlyrBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,10 +77,13 @@ public class QuizShow {
                 }else {
                     Player toRemove = players.getElementAt(selected);
 
+
                     if(JOptionPane.showConfirmDialog(mainPnl, "Are you sure you wish to delete " + toRemove +
                             "?", "Confirm Removal", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
                         players.removePlayer(toRemove.getId());
                         playerList.clearSelection();
+                        addPlyrBtn.setEnabled(true);
+                        addPlyrBtn.setText("Add Player");
                     }
                 }
             }
@@ -91,7 +91,6 @@ public class QuizShow {
         continueBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Ensures at least one player has been entered before starting.
                 if(players.size() > 0){
                     playersPnl.setVisible(false);
                     playerListPnl.setVisible(false);
@@ -130,11 +129,9 @@ public class QuizShow {
                     Player current = players.getElementAt(i);
                     newPlayerList.addPlayer(current.getId(), current.getName(), 0, true);
                 }
-                // Clear current player list, then moves the temporary new list to the current new list.
                 players.clear();
                 players = newPlayerList;
 
-                // Displays the question form.
                 QuestionGUI questionGUI = new QuestionGUI(QuizShow.this, players);
                 questionGUI.setVisisble(true);
 
@@ -162,7 +159,6 @@ public class QuizShow {
     }
 
     private void addInitialQuestions() {
-        // General Knowledge Questions
         String[] incorrect =  new String[]{"Dublin", "Huddersfield", "Manchester"};
         generalQuestions.addQuestion(0, "What is the capital city of England?",
                 "London", incorrect, 1 );
@@ -224,7 +220,6 @@ public class QuizShow {
                 "would be tragic if it weren't funny\"?","Stephen Hawking", incorrect,5);
 
 
-        // Technology Questions
         incorrect = new String[]{"Microsoft", "Google", "JetBrains"};
         technologyQuestions.addQuestion(0, "Firefox is a web browser for many platforms. Which " +
                 "company created it?", "Mozilla", incorrect, 1);
@@ -280,7 +275,8 @@ public class QuizShow {
         technologyQuestions.addQuestion(12, "Which developer was the first to create a Subathon Tool" +
                         " for Twitch streamers?","Mike Binks", incorrect, 5);
 
-        // Entertainment Questions
+
+
         incorrect = new String[]{"Frosty Knickers", "The Beast", "The Dark Destroyer"};
         entertainQuestions.addQuestion(0, "Who is the newest chaser on the TV show \"The Chase\"?",
                 "The Vixen", incorrect, 1);
@@ -290,16 +286,16 @@ public class QuizShow {
                 "Barry Allen", incorrect, 1);
 
         incorrect = new String[]{"Call of Duty: Modern Warfare 2", "Tom Clancy's: The Division", "Grand Theft Auto IV"};
-      //  entertainQuestions.addQuestion(??, "In which game does the quote \"Drop your weapon, or drop your drawers!\""
-        //         " appear?", "7 Days to Die", incorrect, 3);
+        entertainQuestions.addQuestion(3, "In which game does the quote \"Drop your weapon, or drop " +
+                        "your drawers!\" appear?", "7 Days to Die", incorrect, 3);
 
         incorrect = new String[]{"Call of Duty: Modern Warfare 2", "Tom Clancy's: The Division", "Grand Theft Auto IV"};
-       // entertainQuestions.addQuestion(??, "In which film does the quote \"It's just good business, Jack. " +
-       //         "It's just good business.\" appear?", "Pirates of the Caribbean: At World's End", incorrect, 3);
+        entertainQuestions.addQuestion(4, "In which film does the quote \"It's just good business, Jack. " +
+                "It's just good business.\" appear?", "Pirates of the Caribbean: At World's End", incorrect, 3);
 
         incorrect = new String[]{"Barney", "Dinosaurs", "Jurassic Park"};
-      // entertainQuestions.addQuestion(??, "Which TV series featured a baby Triceratops called \"Chomp\"?", "Dinosaur King",
-      //          incorrect, 4);
+       entertainQuestions.addQuestion(5, "Which TV series featured a baby Triceratops called \"Chomp\"?", "Dinosaur King",
+                incorrect, 3);
     }
 
     public boolean isUseSoundEffects() {

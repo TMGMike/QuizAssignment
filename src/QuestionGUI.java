@@ -587,6 +587,7 @@ public class QuestionGUI {
 
     public String getRandomSoundString(boolean correctAnswer) {
         // Adds all of the possible sounds to an array, then chooses one to return.
+
         try {
             ArrayList<String> sounds = new ArrayList<>();
             String currentDirectory = (System.getProperty("user.dir").replace("\\", "/"))
@@ -619,7 +620,7 @@ public class QuestionGUI {
                 sounds.add(currentDirectory + "incorrect_titanic.wav");
                 sounds.add(currentDirectory + "incorrect_weakest.mp3");
             }
-            // Chooses the random sound, and returns the file path as a string.
+
             Random r = new Random();
             int soundId = r.nextInt(sounds.size());
             return sounds.get(soundId);
@@ -638,7 +639,7 @@ public class QuestionGUI {
 
         questionLbl.setText(currentQuestion.getQuestion());
 
-        // Sets the text of the option buttons to the potential answers.
+        // Shuffles the array of answers, and sets the text of the option buttons to the potential answers.
 
         ArrayList<String> shuffled = new ArrayList<>();
 
@@ -652,11 +653,8 @@ public class QuestionGUI {
         answerOption3.setText(shuffled.get(2));
         answerOption4.setText(shuffled.get(3));
 
-        // Changes the text of the confirm button from confirming the category choice,
-        // to submitting their chosen answer.
         confirmChoice.setText("Final Answer!");
 
-        // Shows the help facilities, which are hidden when choosing categories.
         setHelpFacilitiesVisible(true);
 
     }

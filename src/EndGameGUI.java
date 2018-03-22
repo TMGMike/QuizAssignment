@@ -58,6 +58,7 @@ public class EndGameGUI {
             animTimer.cancel();
         }
     };
+
     // When the timer starts, it should loop through all players and display each player's prize.
     TimerTask playerLoopTask = new TimerTask() {
         @Override
