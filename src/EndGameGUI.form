@@ -47,7 +47,7 @@
             <constraints border-constraint="Center"/>
             <properties>
               <background color="-7008059"/>
-              <preferredSize width="200" height="270"/>
+              <preferredSize width="300" height="270"/>
             </properties>
             <border type="none"/>
             <children>
