@@ -29,8 +29,11 @@ public class SettingsGUI {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.pack();
         frame.setResizable(false);
+
+        // Sets the default values for the volume and sound effect check box.
         soundVolumeLbl.setText(effectSlider.getValue() + "%");
         effectsCheck.setSelected(true);
+
         effectSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

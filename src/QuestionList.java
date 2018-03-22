@@ -69,21 +69,18 @@ public class QuestionList extends DefaultListModel<Question>{
     }
 
     public Question chooseQuestion(final int MAX_QUESTIONS, int currentStage){
-
+        // Randomly generate a question from the current list, matching the provided difficulty level (currentStage)
         ArrayList<Question> currentDifficulty = new ArrayList<Question>();
-        // System.out.println(generalQuestions.getQuestion(0));
         for(int i = 0; i < this.size();){
-            // TODO: Document the change from getQuestion(i) to getElementAt(i)
-            // Get question ID wouldn't work when a question is removed, where it would no longer match i
 
             Question currentQuestion = this.getElementAt(i);
 
             if(currentQuestion.getDifficultyLevel() == currentStage){
                 currentDifficulty.add(currentQuestion);
-                //  System.out.println("Found question for difficulty '" + currentStage + ": " + currentQuestion.getQuestion() + "\n");
             }
             i++;
         }
+        // Verifies if any questions, and chooses a question from this list, returning it.
         if(currentDifficulty.size() > 0) {
             Random r = new Random();
             int Low = 0;
@@ -92,10 +89,22 @@ public class QuestionList extends DefaultListModel<Question>{
             System.out.println("Size: " + currentDifficulty.size());
             return currentDifficulty.get(questionId);
         }
-
-        // System.out.println("current stage: " + currentStage);
-
+        // Return null if no questions were found for this specific difficulty level.
         return null;
     }
 
+    public boolean hasQuestionForDifficulty(int difficultyLevel){
+
+        // Check if there are any questions in this category, for the provided difficulty level.
+        for(int i = 0; i < this.size();){
+            Question currentQuestion = this.getElementAt(i);
+            if(currentQuestion.getDifficultyLevel() == difficultyLevel){
+                // Break out of the loop and return true if any question is found.
+                return true;
+            }
+            i++;
+        }
+        // Return false if nothing has been found yet.
+        return false;
+    }
 }

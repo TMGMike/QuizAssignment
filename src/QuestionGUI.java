@@ -69,6 +69,7 @@ public class QuestionGUI {
         this.listofQuestions = listofQuestions;
         this.playerList = players;
         this.currentTurn = playerList.elementAt(0);
+        // Initialises the category lists.
         this.generalQuestions = this.main.getGeneralQuestions();
         this.technologyQuestions = this.main.getTechnologyQuestions();
         this.entertainQuestions = this.main.getEntertainQuestions();
@@ -76,20 +77,26 @@ public class QuestionGUI {
 
         this.playerListView.setModel(playerList);
 
+        // Default the turn to the first player.
         playerTurnLbl.setText(currentTurn.getName() + "'s Turn: ");
         currentStage = 1;
         showCategories();
 
+        // Add all answer option buttons to a ButtonGroup list, which will provide the radio button behaviour.
         answerGroup.add(answerOption1);
         answerGroup.add(answerOption2);
         answerGroup.add(answerOption3);
         answerGroup.add(answerOption4);
+
+        // Sets the size of each button.
         Dimension buttonSize = new Dimension(708, 280);
-        frame.setMinimumSize(new Dimension(1652, 737));
         answerOption1.setPreferredSize(buttonSize);
         answerOption2.setPreferredSize(buttonSize);
         answerOption3.setPreferredSize(buttonSize);
         answerOption4.setPreferredSize(buttonSize);
+
+        // Prevents the player from resizing too small for the buttons to format properly.
+        frame.setMinimumSize(new Dimension(1652, 737));
 
 
         confirmChoice.addActionListener(new ActionListener() {
@@ -163,7 +170,9 @@ public class QuestionGUI {
                             currentTurn.getAnsweredQuestions().getQuestion(currentQuestion.getId()).setRewarded(0);
                             playerListView.updateUI();
                             if(main.isUseSoundEffects()){
+                                // This is a dummy panel to initialise JavaFX, to allow sounds to play.
                                 JFXPanel dummyPnl = new JFXPanel();
+
                                 Media media = new Media(new File(getRandomSoundString(false))
                                         .toURI().toString());
 
@@ -204,24 +213,27 @@ public class QuestionGUI {
         MouseAdapter helpFacilityMouseListener = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                /** TODO - Implement the Timer to animate the correct answer button to increase and decrease in size.
-                    Maybe gradually increase and decrease in size?     **/
+                // Checks which help facility was selected, then checks if they're available for this player.
                 if(e.getSource() == audienceLbl){
                     if(currentTurn.getPublicAvailable()){
+                        // Sets it to disabled so it can't be used again, and changes the icon to show this.
                         audienceLbl.setIcon(new ImageIcon(getClass().getResource("audience_used.png")));
                         currentTurn.setPublicAvailable(false);
 
+                        // The correct answer will always have random votes between 50-100%.
                         Random random = new Random();
-                        int correctVote = random.nextInt(100-50) + 50; // 60
+                        int correctVote = random.nextInt(100-50) + 50;
 
-                        int answer2Max = (100 - correctVote) / 3; // 60 / 3 = 20
-                        int answer2 = random.nextInt(100 - correctVote); // 15
+                        // The other 3 incorrect options will be given random percentages of what is left.
+                        int answer2Max = (100 - correctVote) / 3;
+                        int answer2 = random.nextInt(100 - correctVote);
 
-                        int answer3Max = answer2Max - answer2; // 20 - 15 = 5
-                        int answer3 = random.nextInt(100 - correctVote - answer2); // 3
+                        int answer3Max = answer2Max - answer2;
+                        int answer3 = random.nextInt(100 - correctVote - answer2);
 
-                        int answer4Max = answer3Max - answer3; // 5 - 3 = 2
+                        int answer4Max = answer3Max - answer3;
                         int answer4 = 100 - correctVote - answer2 - answer3;
+
                         String[] incorrect = currentQuestion.getWrongAnswers();
                         System.out.println("-- Total numbers -- \nCorrect Answer: " + correctVote + "%\n" + incorrect[0]
                                 + ": " + answer2 + "%\n" + incorrect[1] +  "2: " + answer3 + "%\n" + incorrect[2] + "3: "
@@ -233,6 +245,11 @@ public class QuestionGUI {
                         Dimension d = new Dimension(answerOption1.getSize().width + inc,
                                 answerOption1.getSize().height + inc);
 
+                        /*
+                            The below code checks which button has the correct answer, gives it the percentage from 50-100
+                            then animates it to increase and decrease in size, to draw the player's attention to the
+                            answer with the most votes.
+                        */
                         if(answerOption1.getText().contains(currentQuestion.getCorrectAnswer())){
                             audienceTimer = new Timer();
 
@@ -442,28 +459,31 @@ public class QuestionGUI {
     }
 
     private void showCategories() {
+        // Checks if there are any questions for this specific difficulty level, and if so sets the text of each button
+        // to the name of each category.
         questionLbl.setText("Please Choose Your Category!");
-        if(generalQuestions.size() > 1) {
+
+        if(generalQuestions.hasQuestionForDifficulty(currentStage)) {
             answerOption1.setText("General Knowledge");
         }else{
             answerOption1.setEnabled(false);
             answerOption1.setText("Out of questions!");
         }
 
-        if(technologyQuestions.size() > 1) {
+        if(technologyQuestions.hasQuestionForDifficulty(currentStage)) {
             answerOption2.setText("Technology");
         }else{
             answerOption2.setEnabled(false);
             answerOption2.setText("Out of questions!");
         }
-        if(entertainQuestions.size() > 1) {
+        if(entertainQuestions.hasQuestionForDifficulty(currentStage)) {
             answerOption3.setText("Entertainment");
         }else{
             answerOption3.setEnabled(false);
             answerOption3.setText("Out of questions!");
         }
 
-        if(historyQuestions.size() > 1) {
+        if(historyQuestions.hasQuestionForDifficulty(currentStage)) {
             answerOption4.setText("Historical");
         }else{
             answerOption4.setEnabled(false);
@@ -566,6 +586,7 @@ public class QuestionGUI {
     }
 
     public String getRandomSoundString(boolean correctAnswer) {
+        // Adds all of the possible sounds to an array, then chooses one to return.
         try {
             ArrayList<String> sounds = new ArrayList<>();
             String currentDirectory = (System.getProperty("user.dir").replace("\\", "/"))
@@ -598,7 +619,7 @@ public class QuestionGUI {
                 sounds.add(currentDirectory + "incorrect_titanic.wav");
                 sounds.add(currentDirectory + "incorrect_weakest.mp3");
             }
-
+            // Chooses the random sound, and returns the file path as a string.
             Random r = new Random();
             int soundId = r.nextInt(sounds.size());
             return sounds.get(soundId);

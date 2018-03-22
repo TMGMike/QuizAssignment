@@ -28,7 +28,6 @@ public class QuizShow {
     private final int MAX_PLAYERS = 10;
     // Player models
     PlayerList players;
-    private DefaultListModel<String> playerModel = new DefaultListModel<>();
 
     // Question properties
     private QuestionList generalQuestions = new QuestionList();
@@ -74,6 +73,7 @@ public class QuizShow {
         rmvPlyrBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Checks if a player has been selected, and prompts for confirmation before deleting them.
                 int selected = playerList.getSelectedIndex();
                 if(selected == -1) {
                     JOptionPane.showMessageDialog(mainPnl, "No player was selected.");
@@ -91,6 +91,7 @@ public class QuizShow {
         continueBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Ensures at least one player has been entered before starting.
                 if(players.size() > 0){
                     playersPnl.setVisible(false);
                     playerListPnl.setVisible(false);
@@ -105,6 +106,7 @@ public class QuizShow {
         exitBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("Exiting Game...");
                 System.exit(0);
             }
         });
@@ -128,8 +130,11 @@ public class QuizShow {
                     Player current = players.getElementAt(i);
                     newPlayerList.addPlayer(current.getId(), current.getName(), 0, true);
                 }
+                // Clear current player list, then moves the temporary new list to the current new list.
                 players.clear();
                 players = newPlayerList;
+
+                // Displays the question form.
                 QuestionGUI questionGUI = new QuestionGUI(QuizShow.this, players);
                 questionGUI.setVisisble(true);
 
@@ -139,6 +144,8 @@ public class QuizShow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!playerNameTF.getText().equals("") && players.size() < MAX_PLAYERS){
+
+                    // Generates a random ID number unique for each player.
                     Random r = new Random();
                     int Low = 11111111;
                     int High = 99999999;
@@ -293,18 +300,6 @@ public class QuizShow {
         incorrect = new String[]{"Barney", "Dinosaurs", "Jurassic Park"};
       // entertainQuestions.addQuestion(??, "Which TV series featured a baby Triceratops called \"Chomp\"?", "Dinosaur King",
       //          incorrect, 4);
-    }
-
-    public int getPlayerID (String name) {
-        for(int i = -1; i < playerModel.getSize(); i++){
-            i++;
-            if(playerModel.getElementAt(i).equals(name)){
-                return i;
-            }
-
-        }
-        return -1;
-
     }
 
     public boolean isUseSoundEffects() {
